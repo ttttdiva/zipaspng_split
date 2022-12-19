@@ -51,17 +51,24 @@ try:
             embedding = base + random.choice(inpngs)
             # 分割圧縮時にできた.zipを-S7e4H1ln16-に置換
             outputimage = outputs + zips[i].replace(".zip","-S7e4H1ln16-") + ".png"
-            print(embedding)
-            # disguise_file(input.zip.001.zip, base.png, input-S7e4H1ln16-001.png)
-            disguise_file(secretzip, embedding, outputimage)
-        
+            while True:
+                try:
+                    # ZIPを画像に埋め込み
+                    print(embedding)
+                    # disguise_file(input.zip.001.zip, base.png, input-S7e4H1ln16-001.png)
+                    disguise_file(secretzip, embedding, outputimage)
+                    break
+                except:
+                    # 埋め込み先画像に既にZIPが埋め込まれているか問題がある。問題ないpngを引くまで再試行
+                    os.remove(outputimage)
+                    embedding = base + random.choice(inpngs)
         # 分割圧縮と再zip化ファイルをフォルダ毎削除＆フォルダ作成
         sleep(1)
         shutil.rmtree(inputs)
         os.mkdir(inputs)
         sleep(1)
 except:
-    # たまにエラーが出る。再圧縮したzipか埋め込み先PNG画像のどちらかが原因だと思われるが未解決。確認のため待たせてる
+    # エラー出たらtraceback結果コピーして教えてください
     import traceback
     traceback.print_exc()
     input()
